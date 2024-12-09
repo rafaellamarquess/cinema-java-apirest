@@ -1,15 +1,22 @@
 package com.senacead.cinema.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
+@Entity
 public class Analise {
 
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-        private Filme filme;
-        private String analise;
-        private double nota;
 
+        @ManyToOne
+        @JoinColumn(name = "filme_id", nullable = false)
+        private Filme filme;
+
+        private String analise;
+        private Double nota;
 
         public Analise() {}
 
@@ -19,36 +26,4 @@ public class Analise {
             this.analise = analise;
             this.nota = nota;
         }
-
-//        public Long getId() {
-//            return id;
-//        }
-//
-//        public void setId(Long id) {
-//            this.id = id;
-//        }
-//
-//        public Filme getFilme() {
-//            return filme;
-//        }
-//
-//        public void setFilme(Filme filme) {
-//            this.filme = filme;
-//        }
-//
-//        public String getAnalise() {
-//            return analise;
-//        }
-//
-//        public void setAnalise(String analise) {
-//            this.analise = analise;
-//        }
-//
-//        public double getNota() {
-//            return nota;
-//        }
-//
-//        public void setNota(double nota) {
-//            this.nota = nota;
-//        }
 }
