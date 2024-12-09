@@ -29,7 +29,7 @@ public class FilmeController {
         return "filmes/formulario";
     }
 
-    @PostMapping
+    @PostMapping("/api/filmes")
     public String cadastrarFilme(@ModelAttribute Filme filme) {
         filme.setId(nextId++);
         filmes.add(filme);

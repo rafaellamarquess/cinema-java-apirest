@@ -2,17 +2,88 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Lista de Filmes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<h1>Filmes Cadastrados</h1>
-<a th:href="@{/filmes/novo}">Cadastrar Novo Filme</a>
-<ul>
-    <li th:each="filme : ${filmes}">
-        <b th:text="${filme.titulo}"></b>
-        <i th:text="${filme.genero}"></i>
-        <i th:text="${filme.sinopse}"></i>
-        <i th:text="${filme.anoLancamento}"></i>
-    </li>
-</ul>
+<div class="container mt-5">
+    <h1 class="text-center">Lista de Filmes</h1>
+    <a href="/filmes/novo" class="btn btn-success mb-3">Adicionar Filme</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Título</th>
+            <th>Gênero</th>
+            <th>Ano</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="filme : ${filmes}">
+            <td th:text="${filme.titulo}"></td>
+            <td th:text="${filme.genero}"></td>
+            <td th:text="${filme.anoLancamento}"></td>
+            <td>
+                <a th:href="@{'/filmes/' + ${filme.id} + '/editar'}" class="btn btn-warning">Editar</a>
+                <button class="btn btn-danger btn-delete" th:attr="data-id=${filme.id}">Deletar</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).on('click', '.btn-delete', function () {
+        const id = $(this).data('id');
+        if (confirm("Deseja realmente deletar este filme?")) {
+            $.ajax({
+                url: `/api/filmes/${id}`,
+                type: 'DELETE',
+                success: function () {
+                    alert("Filme deletado com sucesso!");
+                    location.reload();
+                },
+                error: function () {
+                    alert("Erro ao deletar o filme.");
+                }
+            });
+        }
+    });
+
+        $(document).on('click', '.btn-delete', function () {
+        const id = $(this).data('id');
+        if (confirm("Deseja realmente deletar este filme?")) {
+        $.ajax({
+        url: `/api/filmes/${id}`,
+        type: 'DELETE',
+        success: function () {
+        alert("Filme deletado com sucesso!");
+        location.reload();
+    },
+        error: function () {
+        alert("Erro ao deletar o filme.");
+    }
+    });
+    }
+    });
+
+        // Função para enviar os dados do formulário de edição (PUT)
+        $(document).on('submit', 'form', function (e) {
+        e.preventDefault();
+        const form = $(this);
+        const id = form.attr('action').split('/')[3]; // Extrai o ID do filme da URL
+        $.ajax({
+        url: `/api/filmes/${id}`,
+        type: 'PUT',
+        data: form.serialize(),
+        success: function () {
+        alert("Filme editado com sucesso!");
+        window.location.href = "/filmes"; // Redireciona para a lista de filmes
+    },
+        error: function () {
+        alert("Erro ao editar o filme.");
+    }
+    });
+    });
+</script>
 </body>
 </html>
