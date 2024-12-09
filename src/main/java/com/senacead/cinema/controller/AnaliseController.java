@@ -1,12 +1,10 @@
 package com.senacead.cinema.controller;
 
 import com.senacead.cinema.model.Analise;
+import com.senacead.cinema.model.Filme;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +25,20 @@ public class AnaliseController {
     public String exibirFormularioAnalise(Model model) {
         model.addAttribute("analise", new Analise());
         return "analises/formulario";
+    }
+
+    @GetMapping("editar/{id}")
+    public String editarAnalise(@PathVariable Long id, Model model) {
+        Analise analise = analises.stream()
+                .filter(a -> a.getId().equals(id)) // Encontre a análise pelo ID
+                .findFirst()
+                .orElse(null); // Retorna null se não encontrar a análise
+        if (analise != null) {
+            model.addAttribute("analise", analise);
+            return "analises/editar"; // Retorna a página de edição
+        } else {
+            return "redirect:/analises"; // Redireciona de volta para a lista caso não encontre
+        }
     }
 
     @PostMapping

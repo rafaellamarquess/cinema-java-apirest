@@ -8,6 +8,7 @@
 <body>
 <div class="container mt-5">
     <h1 class="text-center">Análises Cadastradas</h1>
+
     <div class="text-end mb-3">
         <a th:href="@{/analises/nova}" class="btn btn-success">Adicionar Nova Análise</a>
     </div>
@@ -21,37 +22,63 @@
             <th scope="col">Ações</th>
         </tr>
         </thead>
-        <tbody>
-        <tr th:each="analise : ${analises}">
-            <td th:text="${analise.filme.titulo}"></td>
-            <td th:text="${analise.analise}"></td>
-            <td th:text="${analise.nota}"></td>
-            <td>
-                <a th:href="@{/analises/editar/{id}(id=${analise.id})}" class="btn btn-warning btn-sm">Editar</a>
-                <button class="btn btn-danger btn-sm btn-delete" data-id="${analise.id}">Excluir</button>
-            </td>
-        </tr>
+
+        <tbody id="analises-tbody">
+        <!-- lista analise vai aqui -->
         </tbody>
     </table>
-
 </div>
 
 <script>
-    $(document).on('click', '.btn-delete', function () {
-        const id = $(this).data('id');
-        if (confirm("Deseja realmente excluir esta análise?")) {
+    $(document).ready(function () {
+        // Função para carregar análises da API
+        function carregarAnalises() {
             $.ajax({
-                url: `/api/analises/${id}`,
-                type: 'DELETE',
-                success: function () {
-                    alert("Análise excluída com sucesso!");
-                    location.reload(); // Atualiza a página para refletir a exclusão
+                url: '/api/analises',
+                type: 'GET',
+                dataType: 'json',
+                success: function (analises) {
+                    const tbody = $('#analises-tbody');
+                    tbody.empty(); // Limpa o conteúdo anterior
+                    analises.forEach(function (analise) {
+                        const row = `
+                            <tr>
+                                <td>${analise.filme.titulo}</td> <!-- Acessa o título do filme relacionado à análise -->
+                                <td>${analise.analise}</td> <!-- Exibe a análise -->
+                                <td>${analise.nota}</td> <!-- Exibe a nota da análise -->
+                                <td>
+                                    <a href="/analises/editar/{id}" class="btn btn-warning btn-editar">Editar</a>
+                                    <button class="btn btn-danger btn-deletar" data-id="${analise.id}">Deletar</button>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                    });
                 },
                 error: function () {
-                    alert("Erro ao excluir a análise.");
+                    alert('Erro ao carregar análises!');
                 }
             });
         }
+        carregarAnalises();
+
+        // Função para excluir uma análise
+        $(document).on('click', '.btn-deletar', function () {
+            const id = $(this).data('id');
+            if (confirm('Tem certeza que deseja excluir esta análise?')) {
+                $.ajax({
+                    url: `/api/analises/${id}`, // Endpoint para excluir a análise
+                    type: 'DELETE',
+                    success: function () {
+                        alert('Análise excluída com sucesso!');
+                        carregarAnalises();
+                    },
+                    error: function () {
+                        alert('Erro ao excluir análise!');
+                    }
+                });
+            }
+        });
     });
 </script>
 </body>

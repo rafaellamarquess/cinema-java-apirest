@@ -8,81 +8,79 @@
 <body>
 <div class="container mt-5">
     <h1 class="text-center">Lista de Filmes</h1>
-    <a href="/filmes/novo" class="btn btn-success mb-3">Adicionar Filme</a>
+
+    <div class="text-end mb-3">
+    <a th:href="@{/filmes/novo}" class="btn btn-success">Adicionar Filme</a>
+    </div>
+
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>Título</th>
-            <th>Gênero</th>
-            <th>Ano</th>
-            <th>Ações</th>
+            <th scope="col">Título</th>
+            <th scope="col">Gênero</th>
+            <th scope="col">Sinopse</th>
+            <th scope="col">Ano Lançamento</th>
+            <th scope="col">Ações</th>
         </tr>
         </thead>
-        <tbody>
-        <tr th:each="filme : ${filmes}">
-            <td th:text="${filme.titulo}"></td>
-            <td th:text="${filme.genero}"></td>
-            <td th:text="${filme.anoLancamento}"></td>
-            <td>
-                <a th:href="@{'/filmes/' + ${filme.id} + '/editar'}" class="btn btn-warning">Editar</a>
-                <button class="btn btn-danger btn-delete" th:attr="data-id=${filme.id}">Deletar</button>
-            </td>
-        </tr>
+
+        <tbody id="filmes-tbody">
+        <!-- filmes vão aqui -->
         </tbody>
     </table>
 </div>
+
 <script>
-    $(document).on('click', '.btn-delete', function () {
-        const id = $(this).data('id');
-        if (confirm("Deseja realmente deletar este filme?")) {
+    $(document).ready(function () {
+        // Função para carregar filmes da API
+        function carregarFilmes() {
             $.ajax({
-                url: `/api/filmes/${id}`,
-                type: 'DELETE',
-                success: function () {
-                    alert("Filme deletado com sucesso!");
-                    location.reload();
+                url: '/api/filmes',
+                type: 'GET',
+                dataType: 'json',
+                success: function (filmes) {
+                    const tbody = $('#filmes-tbody');
+                    tbody.empty(); // Limpa o conteúdo anterior
+                    filmes.forEach(function (filme) {
+                        const row = `
+                            <tr>
+                                <td>${filme.titulo}</td>
+                                <td>${filme.genero}</td>
+                                <td>${filme.sinopse}</td>
+                                <td>${filme.anoLancamento}</td>
+                                <td>
+                                    <a href="/filmes/${filme.id}/editar" class="btn btn-warning btn-editar">Editar</a>
+                                    <button class="btn btn-danger btn-deletar" data-id="${filme.id}">Deletar</button>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                    });
                 },
                 error: function () {
-                    alert("Erro ao deletar o filme.");
+                    alert('Erro ao carregar filmes!');
                 }
             });
         }
-    });
+        carregarFilmes();
 
-        $(document).on('click', '.btn-delete', function () {
-        const id = $(this).data('id');
-        if (confirm("Deseja realmente deletar este filme?")) {
-        $.ajax({
-        url: `/api/filmes/${id}`,
-        type: 'DELETE',
-        success: function () {
-        alert("Filme deletado com sucesso!");
-        location.reload();
-    },
-        error: function () {
-        alert("Erro ao deletar o filme.");
-    }
-    });
-    }
-    });
-
-        // Função para enviar os dados do formulário de edição (PUT)
-        $(document).on('submit', 'form', function (e) {
-        e.preventDefault();
-        const form = $(this);
-        const id = form.attr('action').split('/')[3]; // Extrai o ID do filme da URL
-        $.ajax({
-        url: `/api/filmes/${id}`,
-        type: 'PUT',
-        data: form.serialize(),
-        success: function () {
-        alert("Filme editado com sucesso!");
-        window.location.href = "/filmes"; // Redireciona para a lista de filmes
-    },
-        error: function () {
-        alert("Erro ao editar o filme.");
-    }
-    });
+        // Função para excluir um filme
+        $(document).on('click', '.btn-deletar', function () {
+            const id = $(this).data('id');
+            if (confirm('Tem certeza que deseja excluir este filme?')) {
+                $.ajax({
+                    url: `/api/filmes/${id}`,
+                    type: 'DELETE',
+                    success: function () {
+                        alert('Filme excluído com sucesso!');
+                        carregarFilmes();
+                    },
+                    error: function () {
+                        alert('Erro ao excluir filme!');
+                    }
+                });
+            }
+        });
     });
 </script>
 </body>

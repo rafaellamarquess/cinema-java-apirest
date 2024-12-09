@@ -29,6 +29,12 @@ public class FilmeController {
         return "filmes/formulario";
     }
 
+    @GetMapping("/editar")
+    public String editarFilme(Model model) {
+        model.addAttribute("filme", new Filme());
+        return "filmes/editar";
+    }
+
     @PostMapping("/api/filmes")
     public String cadastrarFilme(@ModelAttribute Filme filme) {
         filme.setId(nextId++);

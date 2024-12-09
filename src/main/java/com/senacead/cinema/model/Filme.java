@@ -22,12 +22,4 @@ public class Filme {
         private List<Analise> analises;
 
         public Filme() {}
-
-//        public Filme(Long id, String titulo, String sinopse, String genero, int anoLancamento) {
-//            this.id = id;
-//            this.titulo = titulo;
-//            this.sinopse = sinopse;
-//            this.genero = genero;
-//            this.anoLancamento = anoLancamento;
-//        }
 }
