@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Análises</title>
+</head>
+<body>
+<h1>Análises Cadastradas</h1>
+<a th:href="@{/analises/nova}">Adicionar Nova Análise</a>
+<ul>
+    <li th:each="analise : ${analises}">
+        <b th:text="${analise.filme.titulo}"></b> -
+        Nota: <i th:text="${analise.nota}"></i>
+    </li>
+</ul>
+</body>
+</html>

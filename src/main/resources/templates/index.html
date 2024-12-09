@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bem-vindo ao Cinema SENAC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+        .links a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Bem-vindo ao Sistema de Filmes e Análises</h1>
+    <p>Gerencie seus filmes favoritos e compartilhe suas análises!</p>
+
+    <div class="links">
+        <a th:href="@{/filmes}">Gerenciar Filmes</a>
+        <a th:href="@{/analises}">Gerenciar Análises</a>
+    </div>
+</div>
+</body>
+</html>

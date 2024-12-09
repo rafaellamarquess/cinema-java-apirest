@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Adicionar Análise</title>
+</head>
+<body>
+<h1>Adicionar Análise</h1>
+<form th:action="@{/analises}" th:object="${analise}" method="post">
+    <label>Filme: <input type="text" th:field="*{filme.titulo}" /></label><br/>
+    <label>Análise: <textarea th:field="*{analise}"></textarea></label><br/>
+    <label>Nota: <input type="number" th:field="*{nota}" /></label><br/>
+    <button type="submit">Salvar</button>
+</form>
+</body>
+</html>
