@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,37 +40,34 @@ public class FilmeController {
 
     // Cadastrar novo filme
     @PostMapping
-    public ResponseEntity<String> salvarFilme(@RequestBody Filme filme) {
+    public String salvarFilme(@ModelAttribute Filme filme) {
         filmeRepository.save(filme);
-        return ResponseEntity.ok("Filme salvo com sucesso!");
+        return "redirect:/filmes";
     }
 
     // Exibir o formulário de edição de filme
     @GetMapping("/editar/{id}")
     public String editarFilme(@PathVariable Long id, Model model) {
-        Filme filme = filmeRepository.findById(id).orElse(null);
-        if (filme != null) {
-            model.addAttribute("filme", filme);
-            return "filmes/editar"; // Página de formulário para editar o filme
-        } else {
-            return "redirect:/filmes"; // Se não encontrar o filme, redireciona para a lista
-        }
+        Filme filme = filmeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+        model.addAttribute("filme", filme);
+        return "filmes/editar";
     }
 
     // Atualizar filme existente
-    @PutMapping("/api/filmes/{id}")
-    @ResponseBody
-    public ResponseEntity<String> atualizarFilme(@PathVariable Long id, @RequestBody Filme filmeAtualizado) {
+    @PostMapping("/{id}")
+    public String atualizarFilme(@PathVariable Long id, @ModelAttribute Filme filmeAtualizado, RedirectAttributes redirectAttributes) {
         return filmeRepository.findById(id).map(filme -> {
             filme.setTitulo(filmeAtualizado.getTitulo());
             filme.setSinopse(filmeAtualizado.getSinopse());
             filme.setGenero(filmeAtualizado.getGenero());
             filme.setAnoLancamento(filmeAtualizado.getAnoLancamento());
             filmeRepository.save(filme);
-            return ResponseEntity.ok("Filme atualizado com sucesso!");
-        }).orElseThrow(() -> new RuntimeException("Filme não encontrado!"));
-    }
 
+            redirectAttributes.addFlashAttribute("message", "Filme atualizado com sucesso!");
+            return "redirect:/filmes"; // Redireciona para a lista de filmes
+        }).orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+    }
 
     // Deletar filme
     @GetMapping("/deletar/{id}")

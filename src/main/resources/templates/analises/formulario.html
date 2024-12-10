@@ -3,13 +3,13 @@
 <head>
     <title>Adicionar Análise</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <div th:replace="~{index.html}"></div>
 <div class="container mt-5">
     <h1 class="text-center">Adicionar Análise</h1>
-    <form id="form-analisar" class="mt-4">
+
+    <form action="/analises" method="post" class="mt-4">
         <div class="mb-3">
             <label for="filme" class="form-label">Filme</label>
             <select class="form-control" id="filme" name="filmeId" required>
@@ -37,31 +37,10 @@
             </div>
         </div>
 
-        <button type="button" id="salvarAnalise" class="btn btn-primary">Salvar Análise</button>
+        <button type="submit" class="btn btn-primary">Salvar Análise</button>
     </form>
 
     <a href="/analises" class="btn btn-secondary mt-3">Voltar para a Lista de Análises</a>
 </div>
-
-<script>
-    document.getElementById('salvarAnalise').addEventListener('click', function () {
-        const analise = {
-            filmeId: document.getElementById('filme').value,
-            analise: document.getElementById('analise').value,
-            nota: document.getElementById('nota').value
-        };
-
-        axios.post('/analises', analise)
-            .then(response => {
-                alert('Análise salva com sucesso!');
-                window.location.href = '/analises';
-            })
-            .catch(error => {
-                console.error('Erro ao salvar a análise:', error);
-                alert('Ocorreu um erro ao salvar a análise. Tente novamente.');
-            });
-    });
-</script>
-
 </body>
 </html>

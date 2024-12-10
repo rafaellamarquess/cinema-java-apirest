@@ -42,10 +42,9 @@ public class AnaliseController {
         return "analises/formulario";
     }
 
-    // Cdastra uma nova análise
+    // Cadastra nova análise
     @PostMapping
-    @ResponseBody
-    public ResponseEntity<String> salvarAnalise(@RequestBody Analise analise) {
+    public ResponseEntity<String> salvarAnalise(@ModelAttribute Analise analise) {
         analiseRepository.save(analise);
         return ResponseEntity.ok("Análise salva com sucesso!");
     }
@@ -62,16 +61,16 @@ public class AnaliseController {
     }
 
 
-    // Atualizar análise existente
-    @PutMapping("/editar/{id}")
+    // Atualiza análise existente
+    @PutMapping("api/analise/{id}")
     @ResponseBody
-    public String atualizarAnalise(@PathVariable Long id, @RequestBody Analise analiseAtualizada) {
+    public ResponseEntity<String> atualizarAnalise(@PathVariable Long id, @RequestBody Analise analiseAtualizada) {
         return analiseRepository.findById(id).map(analise -> {
             analise.setFilme(analiseAtualizada.getFilme());
             analise.setAnalise(analiseAtualizada.getAnalise());
             analise.setNota(analiseAtualizada.getNota());
             analiseRepository.save(analise);
-            return "Análise atualizada com sucesso!";
+            return ResponseEntity.ok("Análise atualizada com sucesso!");
         }).orElseThrow(() -> new RuntimeException("Análise não encontrada!"));
     }
 

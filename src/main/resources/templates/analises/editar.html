@@ -47,14 +47,28 @@
 </div>
 
 <script>
-    axios.put(`/analises/${analiseId}`, analise)
+  const analiseId = /*[[${analise.id}]]*/ '+1';
+
+  // Adiciona evento de submissão no formulário
+  document.getElementById('form-editar-analise').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Coleta os dados do formulário
+    const analise = {
+      titulo: document.getElementById('titulo').value,
+      descricao: document.getElementById('descricao').value,
+      categoria: document.getElementById('categoria').value,
+    };
+
+    // Envia os dados para o backend usando Axios (PUT)
+    axios.put(`/api/analises/${analiseId}`, analise)
             .then(response => {
-              alert('Análise editada com sucesso!');
-              window.location.href = '/analises';
+              alert('Análise atualizada com sucesso!');
+              window.location.href = '/analises'; // Redireciona para a lista de análises
             })
             .catch(error => {
-              console.error('Erro ao editar a análise:', error);
-              alert('Ocorreu um erro ao salvar as alterações. Tente novamente.');
+              console.error('Erro ao atualizar a análise:', error);
+              alert('Ocorreu um erro ao atualizar a análise. Tente novamente.');
             });
   });
 </script>
