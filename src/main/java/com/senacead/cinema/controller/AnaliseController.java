@@ -2,6 +2,7 @@ package com.senacead.cinema.controller;
 
 import com.senacead.cinema.model.Analise;
 import com.senacead.cinema.model.Filme;
+import com.senacead.cinema.repository.AnaliseRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +13,18 @@ import java.util.List;
 @Controller
 @RequestMapping("/analises")
 public class AnaliseController {
-    private List<Analise> analises = new ArrayList<>();
+    private final List<Analise> analises = new ArrayList<>();
     private Long nextId = 1L;
+
+    private final AnaliseRepository analiseRepository;
+
+    public AnaliseController(AnaliseRepository analiseRepository) {
+        this.analiseRepository = analiseRepository;
+    }
 
     @GetMapping
     public String listarAnalises(Model model) {
+        final List<Analise> analises = analiseRepository.findAll();
         model.addAttribute("analises", analises);
         return "analises/lista";
     }
