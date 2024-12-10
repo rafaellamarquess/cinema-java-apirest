@@ -3,12 +3,13 @@
 <head>
   <title>Editar Filme</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <div class="container mt-5">
   <h1 class="text-center">Editar Filme</h1>
-  <form th:action="@{/api/filmes/{id}(id=${filme.id})}" method="post" class="mt-4">
+  <!-- Formulário com método PUT -->
+  <form id="form-editar-filme" class="mt-4">
     <div class="mb-3">
       <label for="titulo" class="form-label">Título</label>
       <input type="text" class="form-control" id="titulo" name="titulo" th:value="${filme.titulo}" required>
@@ -29,5 +30,31 @@
   </form>
   <a href="/filmes" class="btn btn-secondary mt-3">Voltar para a Lista de Filmes</a>
 </div>
+
+<script>
+  const filmeId = /*[[${filme.id}]]*/ '1';
+
+  document.getElementById('form-editar-filme').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const filme = {
+      titulo: document.getElementById('titulo').value,
+      sinopse: document.getElementById('sinopse').value,
+      genero: document.getElementById('genero').value,
+      anoLancamento: document.getElementById('anoLancamento').value
+    };
+
+    // Envia os dados para o backend usando Axios (PUT)
+    axios.put(`/api/filmes/${filmeId}`, filme)
+            .then(response => {
+              alert('Filme atualizado com sucesso!');
+              window.location.href = '/filmes'; // Redireciona para a lista de filmes
+            })
+            .catch(error => {
+              console.error('Erro ao atualizar o filme:', error);
+              alert('Ocorreu um erro ao atualizar o filme. Tente novamente.');
+            });
+  });
+</script>
 </body>
 </html>

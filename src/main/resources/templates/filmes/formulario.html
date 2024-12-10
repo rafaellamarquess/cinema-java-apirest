@@ -1,107 +1,68 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <title>Cadastro de Filme</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <div class="container mt-5">
   <h1 class="text-center">Cadastro de Filme</h1>
 
-  <form th:action="@{/filmes/salvar}" th:object="${filme}" method="post" class="mt-4">
+  <form id="filmeForm">
     <div class="mb-3">
       <label for="titulo" class="form-label">Título</label>
-      <input type="text" class="form-control" id="titulo" th:field="*{titulo}" required>
+      <input type="text" class="form-control" id="titulo" name="titulo" required>
       <div class="invalid-feedback">
         O título é obrigatório.
       </div>
     </div>
     <div class="mb-3">
       <label for="sinopse" class="form-label">Sinopse</label>
-      <textarea class="form-control" id="sinopse" th:field="*{sinopse}" rows="3" required></textarea>
+      <textarea class="form-control" id="sinopse" name="sinopse" rows="3" required></textarea>
       <div class="invalid-feedback">
         A sinopse é obrigatória.
       </div>
     </div>
     <div class="mb-3">
       <label for="genero" class="form-label">Gênero</label>
-      <input type="text" class="form-control" id="genero" th:field="*{genero}" required>
+      <input type="text" class="form-control" id="genero" name="genero" required>
       <div class="invalid-feedback">
         O gênero é obrigatório.
       </div>
     </div>
     <div class="mb-3">
       <label for="anoLancamento" class="form-label">Ano de Lançamento</label>
-      <input type="number" class="form-control" id="anoLancamento" th:field="*{anoLancamento}" required>
+      <input type="number" class="form-control" id="anoLancamento" name="anoLancamento" required>
       <div class="invalid-feedback">
         O ano de lançamento é obrigatório.
       </div>
     </div>
-    <button type="submit" class="btn btn-primary">Salvar Filme</button>
+    <button type="button" id="salvarFilme" class="btn btn-primary">Salvar Filme</button>
   </form>
 
   <a href="/filmes" class="btn btn-secondary mt-3">Voltar para a Lista de Filmes</a>
 </div>
 
+<script>
+  document.getElementById('salvarFilme').addEventListener('click', function () {
+    const filme = {
+      titulo: document.getElementById('titulo').value,
+      sinopse: document.getElementById('sinopse').value,
+      genero: document.getElementById('genero').value,
+      anoLancamento: document.getElementById('anoLancamento').value
+    };
 
-<!--<script>-->
-<!--  // Validar o formulário ao enviar-->
-<!--  (function () {-->
-<!--    'use strict'-->
-<!--    var forms = document.querySelectorAll('form')-->
-<!--    Array.prototype.slice.call(forms)-->
-<!--            .forEach(function (form) {-->
-<!--              form.addEventListener('submit', function (event) {-->
-<!--                if (!form.checkValidity()) {-->
-<!--                  event.preventDefault()-->
-<!--                  event.stopPropagation()-->
-<!--                }-->
-<!--                form.classList.add('was-validated')-->
-<!--              }, false)-->
-<!--            })-->
-<!--  })()-->
-
-<!--  // Enviar formulário como JSON via AJAX-->
-<!--  $(document).ready(function() {-->
-<!--    $('#form-filme').on('submit', function(e) {-->
-<!--      e.preventDefault(); // Evita o envio tradicional do formulário-->
-
-<!--      // Coleta os dados do formulário-->
-<!--      var titulo = $('#titulo').val();-->
-<!--      var sinopse = $('#sinopse').val();-->
-<!--      var genero = $('#genero').val();-->
-<!--      var anoLancamento = $('#anoLancamento').val();-->
-
-<!--      // Verifica se os campos obrigatórios estão preenchidos-->
-<!--      if (!titulo || !sinopse || !genero || !anoLancamento) {-->
-<!--        alert('Por favor, preencha todos os campos!');-->
-<!--        return;-->
-<!--      }-->
-
-<!--      // Cria o objeto JSON-->
-<!--      var dados = {-->
-<!--        titulo: titulo,-->
-<!--        sinopse: sinopse,-->
-<!--        genero: genero,-->
-<!--        anoLancamento: parseInt(anoLancamento)-->
-<!--      };-->
-
-<!--      $.ajax({-->
-<!--        url: '/api/filmes', // URL de envio do formulário-->
-<!--        type: 'POST',-->
-<!--        contentType: 'application/json',-->
-<!--        dataType: 'json',-->
-<!--        data: JSON.stringify(dados), // Converte o objeto em JSON-->
-<!--        success: function(response) {-->
-<!--          alert('Filme salvo com sucesso!');-->
-<!--          window.location.href = "/filmes"; // Redireciona para a lista de filmes-->
-<!--        },-->
-<!--        error: function(xhr, status, error) {-->
-<!--          alert('Erro ao salvar filme: ' + xhr.responseText);-->
-<!--        }-->
-<!--      });-->
-<!--    });-->
-<!--  });-->
-<!--</script>-->
+    axios.post('/filmes', filme)
+            .then(response => {
+              alert('Filme cadastrado com sucesso!');
+              window.location.href = '/filmes';
+            })
+            .catch(error => {
+              console.error('Erro ao salvar o filme:', error);
+              alert('Ocorreu um erro ao salvar o filme. Tente novamente.');
+            });
+  });
+</script>
 </body>
 </html>

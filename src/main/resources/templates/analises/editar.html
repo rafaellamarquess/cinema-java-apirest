@@ -1,28 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <title>Editar Análise</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="/js/js/theme.js"></script>
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-<h1>Editar Análise</h1>
+<div class="container mt-5">
+  <h1 class="text-center">Editar Análise</h1>
+  <form id="form-analisar" class="mt-4">
+    <div class="mb-3">
+      <label for="filme" class="form-label">Filme</label>
+      <select class="form-control" id="filme" name="filmeId" required>
+        <option value="" disabled selected>Escolha um filme...</option>
+        <option th:each="filme : ${filmes}" th:value="${filme.id}" th:text="${filme.titulo}"
+                th:selected="${filme.id == analise.filme.id}"></option>
+      </select>
+      <div class="invalid-feedback">
+        Por favor, selecione um filme.
+      </div>
+    </div>
 
-<form th:action="@{/analises/editar/{id}(id=${analise.id})}" method="post">
-  <input type="hidden" name="_method" value="PUT">
+    <div class="mb-3">
+      <label for="analise" class="form-label">Análise</label>
+      <textarea class="form-control" id="analise" name="analise" rows="3" required placeholder="Digite sua análise aqui..."
+                th:text="${analise.analise}"></textarea>
+      <div class="invalid-feedback">
+        Por favor, escreva uma análise.
+      </div>
+    </div>
 
-  <label for="filme">Filme:</label>
-  <input type="text" id="filme" name="filme" th:value="${analise.filme.titulo}" readonly><br>
+    <div class="mb-3">
+      <label for="nota" class="form-label">Nota</label>
+      <input type="number" class="form-control" id="nota" name="nota" min="1" max="10" required placeholder="Digite uma nota entre 1 e 10"
+             th:value="${analise.nota}">
+      <div class="invalid-feedback">
+        A nota deve ser entre 1 e 10.
+      </div>
+    </div>
 
-  <label for="analise">Análise:</label>
-  <textarea id="analise" name="analise" required th:text="${analise.analise}"></textarea><br>
+    <button type="button" id="salvarAnalise" class="btn btn-primary">Salvar Edição da Análise</button>
+  </form>
 
-  <label for="nota">Nota:</label>
-  <input type="number" id="nota" name="nota" th:value="${analise.nota}" min="0" max="10" step="0.1" required><br>
+  <a href="/analises" class="btn btn-secondary mt-3">Voltar para a Lista de Análises</a>
+</div>
 
-  <button type="submit">Salvar</button>
-  <button type="button" onclick="window.location.href='/analises'">Voltar</button>
-</form>
+<script>
+    axios.put(`/analises/${analiseId}`, analise)
+            .then(response => {
+              alert('Análise editada com sucesso!');
+              window.location.href = '/analises';
+            })
+            .catch(error => {
+              console.error('Erro ao editar a análise:', error);
+              alert('Ocorreu um erro ao salvar as alterações. Tente novamente.');
+            });
+  });
+</script>
 </body>
 </html>

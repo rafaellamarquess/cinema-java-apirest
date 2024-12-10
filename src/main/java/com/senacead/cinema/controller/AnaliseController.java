@@ -3,6 +3,8 @@ package com.senacead.cinema.controller;
 import com.senacead.cinema.model.Analise;
 import com.senacead.cinema.model.Filme;
 import com.senacead.cinema.repository.AnaliseRepository;
+import com.senacead.cinema.repository.FilmeRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,11 @@ public class AnaliseController {
     private Long nextId = 1L;
 
     private final AnaliseRepository analiseRepository;
+    private final FilmeRepository filmeRepository;
 
-    public AnaliseController(AnaliseRepository analiseRepository) {
+    public AnaliseController(AnaliseRepository analiseRepository, FilmeRepository filmeRepository) {
         this.analiseRepository = analiseRepository;
+        this.filmeRepository = filmeRepository;
     }
 
     @GetMapping
@@ -29,30 +33,52 @@ public class AnaliseController {
         return "analises/lista";
     }
 
+    // Exibir o formulário de adição de análise
     @GetMapping("/nova")
     public String exibirFormularioAnalise(Model model) {
         model.addAttribute("analise", new Analise());
+        List<Filme> filmes = filmeRepository.findAll();
+        model.addAttribute("filmes", filmes);
         return "analises/formulario";
     }
 
-    @GetMapping("editar/{id}")
-    public String editarAnalise(@PathVariable Long id, Model model) {
-        Analise analise = analises.stream()
-                .filter(a -> a.getId().equals(id)) // Encontre a análise pelo ID
-                .findFirst()
-                .orElse(null); // Retorna null se não encontrar a análise
-        if (analise != null) {
-            model.addAttribute("analise", analise);
-            return "analises/editar"; // Retorna a página de edição
-        } else {
-            return "redirect:/analises"; // Redireciona de volta para a lista caso não encontre
-        }
+    // Cdastra uma nova análise
+    @PostMapping
+    @ResponseBody
+    public ResponseEntity<String> salvarAnalise(@RequestBody Analise analise) {
+        analiseRepository.save(analise);
+        return ResponseEntity.ok("Análise salva com sucesso!");
     }
 
-    @PostMapping
-    public String cadastrarAnalise(@ModelAttribute Analise analise) {
-        analise.setId(nextId++);
-        analises.add(analise);
-        return "redirect:/analises";
+    // Exibir o formulário de edição de análise
+    @GetMapping("/editar/{id}")
+    public String editarAnalise(@PathVariable Long id, Model model) {
+        Analise analise = analiseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Análise não encontrada!"));
+        List<Filme> filmes = filmeRepository.findAll();
+        model.addAttribute("analise", analise);
+        model.addAttribute("filmes", filmes);
+        return "analises/editar";
+    }
+
+
+    // Atualizar análise existente
+    @PutMapping("/editar/{id}")
+    @ResponseBody
+    public String atualizarAnalise(@PathVariable Long id, @RequestBody Analise analiseAtualizada) {
+        return analiseRepository.findById(id).map(analise -> {
+            analise.setFilme(analiseAtualizada.getFilme());
+            analise.setAnalise(analiseAtualizada.getAnalise());
+            analise.setNota(analiseAtualizada.getNota());
+            analiseRepository.save(analise);
+            return "Análise atualizada com sucesso!";
+        }).orElseThrow(() -> new RuntimeException("Análise não encontrada!"));
+    }
+
+    // Deletar análise
+    @GetMapping("/deletar/{id}")
+    public String deletarAnalise(@PathVariable Long id) {
+        analiseRepository.deleteById(id); // Deleta a análise pelo ID
+        return "redirect:/analises"; // Redireciona para a lista de análises
     }
 }
