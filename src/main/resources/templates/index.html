@@ -2,43 +2,45 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Bem-vindo ao Cinema SENAC</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .links {
-            margin-top: 20px;
-        }
-        .links a {
-            display: inline-block;
-            margin: 10px;
-            padding: 10px 20px;
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            border-radius: 5px;
-        }
-        .links a:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container">
-    <h1>Bem-vindo ao Sistema de Filmes e Análises</h1>
-    <p>Gerencie seus filmes favoritos e compartilhe suas análises!</p>
-    <button id="theme-toggle">Alterar Tema</button>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Bem-vindo ao Sistema de Filmes e Análises</h1>
+        <p class="lead">Gerencie seus filmes favoritos e compartilhe suas análises!</p>
+        <button id="theme-toggle" class="btn btn-secondary">Alternar Tema</button>
+    </div>
 
-    <div class="links">
-        <a th:href="@{/filmes}">Gerenciar Filmes</a>
-        <a th:href="@{/analises}">Gerenciar Análises</a>
+    <div class="d-flex justify-content-center mb-4">
+        <div class="list-group">
+            <a th:href="@{/filmes}" class="list-group-item list-group-item-action">Gerenciar Filmes</a>
+            <a th:href="@{/analises}" class="list-group-item list-group-item-action">Gerenciar Análises</a>
+        </div>
     </div>
 </div>
+
+<script>
+    // Verificar o tema armazenado no localStorage e aplicá-lo
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('bg-dark', 'text-light');
+    } else {
+        document.body.classList.remove('bg-dark', 'text-light');
+    }
+
+    // Alternar tema e salvar no localStorage
+    document.getElementById('theme-toggle').addEventListener('click', function() {
+        document.body.classList.toggle('bg-dark');
+        document.body.classList.toggle('text-light');
+
+        // Salvar o tema escolhido no localStorage
+        if (document.body.classList.contains('bg-dark')) {
+            localStorage.setItem('theme', 'dark');
+        } else {
+            localStorage.setItem('theme', 'light');
+        }
+    });
+</script>
 </body>
 </html>
