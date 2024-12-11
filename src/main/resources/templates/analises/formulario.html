@@ -9,37 +9,31 @@
 <div class="container mt-5">
     <h1 class="text-center">Adicionar Análise</h1>
 
-    <form action="/analises" method="post" class="mt-4">
+
+    <form th:action="@{/analises}" method="post">
         <div class="mb-3">
             <label for="filme" class="form-label">Filme</label>
             <select class="form-control" id="filme" name="filmeId" required>
                 <option value="" disabled selected>Escolha um filme...</option>
                 <option th:each="filme : ${filmes}" th:value="${filme.id}" th:text="${filme.titulo}"></option>
             </select>
-            <div class="invalid-feedback">
-                Por favor, selecione um filme.
-            </div>
         </div>
 
         <div class="mb-3">
             <label for="analise" class="form-label">Análise</label>
-            <textarea class="form-control" id="analise" name="analise" rows="3" required placeholder="Digite sua análise aqui..."></textarea>
-            <div class="invalid-feedback">
-                Por favor, escreva uma análise.
-            </div>
+            <textarea class="form-control" id="analise" name="analise" rows="3" required></textarea>
         </div>
 
         <div class="mb-3">
             <label for="nota" class="form-label">Nota</label>
-            <input type="number" class="form-control" id="nota" name="nota" min="1" max="10" required placeholder="Digite uma nota entre 1 e 10">
-            <div class="invalid-feedback">
-                A nota deve ser entre 1 e 10.
-            </div>
+            <input type="number" class="form-control" id="nota" name="nota" min="1" max="10" required>
         </div>
 
         <button type="submit" class="btn btn-primary">Salvar Análise</button>
     </form>
 
+
+    <!-- Link para voltar à lista -->
     <a href="/analises" class="btn btn-secondary mt-3">Voltar para a Lista de Análises</a>
 </div>
 </body>

@@ -63,7 +63,6 @@ public class FilmeController {
             filme.setGenero(filmeAtualizado.getGenero());
             filme.setAnoLancamento(filmeAtualizado.getAnoLancamento());
             filmeRepository.save(filme);
-
             redirectAttributes.addFlashAttribute("message", "Filme atualizado com sucesso!");
             return "redirect:/filmes"; // Redireciona para a lista de filmes
         }).orElseThrow(() -> new RuntimeException("Filme não encontrado"));

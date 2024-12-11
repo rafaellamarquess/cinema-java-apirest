@@ -1,6 +1,6 @@
 package com.senacead.cinema.controller;
 
-import com.senacead.cinema.model.Analise;
+import com.senacead.cinema.model.AnaliseFilme;
 import com.senacead.cinema.repository.AnaliseRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,17 +17,17 @@ public class AnaliseRestController {
     }
 
     @GetMapping
-    public List<Analise> listarTodas() {
+    public List<AnaliseFilme> listarTodas() {
         return analiseRepository.findAll();
     }
 
     @PostMapping
-    public Analise adicionarAnalise(@RequestBody Analise analise) {
+    public AnaliseFilme adicionarAnalise(@RequestBody AnaliseFilme analise) {
         return analiseRepository.save(analise);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Analise> atualizarAnalise(@PathVariable Long id, @RequestBody Analise analiseAtualizada) {
+    @PostMapping("/{id}")
+    public ResponseEntity<AnaliseFilme> atualizarAnalise(@PathVariable Long id, @RequestBody AnaliseFilme analiseAtualizada) {
         return analiseRepository.findById(id).map(analise -> {
             analise.setAnalise(analiseAtualizada.getAnalise());
             analise.setNota(analiseAtualizada.getNota());

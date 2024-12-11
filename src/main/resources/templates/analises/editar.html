@@ -3,13 +3,15 @@
 <head>
   <title>Editar Análise</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <div th:replace="~{index.html}"></div>
 <div class="container mt-5">
   <h1 class="text-center">Editar Análise</h1>
-  <form id="form-analisar" class="mt-4">
+
+  <form th:action="@{/analises/{id}(id=${analise.id})}" th:method="post">
+    <input type="hidden" name="id" th:value="${analise.id}">
+
     <div class="mb-3">
       <label for="filme" class="form-label">Filme</label>
       <select class="form-control" id="filme" name="filmeId" required>
@@ -17,60 +19,25 @@
         <option th:each="filme : ${filmes}" th:value="${filme.id}" th:text="${filme.titulo}"
                 th:selected="${filme.id == analise.filme.id}"></option>
       </select>
-      <div class="invalid-feedback">
-        Por favor, selecione um filme.
-      </div>
     </div>
 
     <div class="mb-3">
       <label for="analise" class="form-label">Análise</label>
-      <textarea class="form-control" id="analise" name="analise" rows="3" required placeholder="Digite sua análise aqui..."
+      <textarea class="form-control" id="analise" name="analise" rows="3" required
                 th:text="${analise.analise}"></textarea>
-      <div class="invalid-feedback">
-        Por favor, escreva uma análise.
-      </div>
     </div>
 
     <div class="mb-3">
       <label for="nota" class="form-label">Nota</label>
-      <input type="number" class="form-control" id="nota" name="nota" min="1" max="10" required placeholder="Digite uma nota entre 1 e 10"
+      <input type="number" class="form-control" id="nota" name="nota" min="1" max="10" required
              th:value="${analise.nota}">
-      <div class="invalid-feedback">
-        A nota deve ser entre 1 e 10.
-      </div>
     </div>
 
-    <button type="button" id="salvarAnalise" class="btn btn-primary">Salvar Edição da Análise</button>
+    <button type="submit" class="btn btn-primary">Salvar Edição</button>
   </form>
 
+  <!-- Link para voltar -->
   <a href="/analises" class="btn btn-secondary mt-3">Voltar para a Lista de Análises</a>
 </div>
-
-<script>
-  const analiseId = /*[[${analise.id}]]*/ '+1';
-
-  // Adiciona evento de submissão no formulário
-  document.getElementById('form-editar-analise').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    // Coleta os dados do formulário
-    const analise = {
-      titulo: document.getElementById('titulo').value,
-      descricao: document.getElementById('descricao').value,
-      categoria: document.getElementById('categoria').value,
-    };
-
-    // Envia os dados para o backend usando Axios (PUT)
-    axios.put(`/api/analises/${analiseId}`, analise)
-            .then(response => {
-              alert('Análise atualizada com sucesso!');
-              window.location.href = '/analises'; // Redireciona para a lista de análises
-            })
-            .catch(error => {
-              console.error('Erro ao atualizar a análise:', error);
-              alert('Ocorreu um erro ao atualizar a análise. Tente novamente.');
-            });
-  });
-</script>
 </body>
 </html>

@@ -2,10 +2,13 @@ package com.senacead.cinema.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-public class Analise {
+@NoArgsConstructor
+@Table(name = "analisefilme")
+public class AnaliseFilme {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +17,8 @@ public class Analise {
         @ManyToOne
         @JoinColumn(name = "filme_id", nullable = false)
         private Filme filme;
+
+        @Column(columnDefinition = "TEXT", nullable = false)
         private String analise;
         private Double nota;
-
-        public Analise() {}
 }
